@@ -92,11 +92,11 @@ class UserLoginResource(Resource):
 
 jwt_blocklist = set()
 
-class UserLogoutResourecd(Resource):
+class UserLogoutResourec(Resource):
 
     @jwt_required()
     def delete(self):
-        jti = get_jwt(['jti'])
+        jti = get_jwt()['jti']
         print(jti)
 
         jwt_blocklist.add(jti)

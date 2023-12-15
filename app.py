@@ -2,8 +2,8 @@ from flask import Flask
 from flask_jwt_extended import JWTManager, jwt_required
 from flask_restful import Api
 from config import Config
-from resources.user import UserListResource, UserLoginResource, UserLogoutResourecd
-
+from resources.image import ImageUploadResource
+from resources.user import UserListResource, UserLoginResource, UserLogoutResourec
 from resources.user import jwt_blocklist
 
 app = Flask(__name__)
@@ -26,7 +26,9 @@ api.add_resource(UserListResource,'/user/add')
 
 api.add_resource(UserLoginResource,'/user/login')
 
-api.add_resource(UserLogoutResourecd,'/user/logout')
+api.add_resource(UserLogoutResourec,'/user/logout')
+
+api.add_resource(ImageUploadResource,'/upload')
 
 
 
