@@ -38,31 +38,44 @@ class ImageUploadResource(Resource):
             print(e)
             return{'error':str(e)},500
         
+        tag_list=self.detect_labels(new_file_name,Config.S3_BUCKET)
+        print(tag_list)
+
         try:
-           connection = get_connection()
-           query= '''insert into image
-                        (userId,content,imgUrl)
-                        values
-                        (%s,%s,%s);'''
-           
-           imgUrl = Config.S3_LOCATION+file.filename
-
-           record = (user_id,content, imgUrl)
-
-           cursor = connection.cursor()
-           cursor.execute(query,record)
-           connection.commit()
-
-           cursor.close()
-           connection.close()
-
+            connection = get_connection()
+            query = '''insert into image
+                        (userId,content,imgUrl)'''
         except Error as e:
-            print(e)
-            cursor.close()
-            connection.close()
-            return{'error':str(e)},500
+            return
+        
+        return{"result":"success",
+               "labels":tag_list,
+               "count":len(tag_list)}
+    
+    def detect_labels(self, photo, bucket):
 
-        return{'result':'success',
-               'imgUrl':imgUrl,
-               'content':content},200
+        client = boto3.client('rekognition',
+                              'ap-northeast-2',
+                              aws_access_key_id = Config.AWS_ACCESS_KEY_ID,
+                              aws_secret_access_key = Config.AWS_SECRET_ACCESS_KEY)
+        
+        response = client.detect_labels(Image={'S3Object':{'Bucket':bucket,'Name':photo}},
+
+        MaxLabels=5,
+        )
+        
+        print('Detected labels for ' + photo)
+        print()
+
+        # 레이블만 가져오기
+        tag_list =[]
+        for label in response['Labels']:
+            if label['Confidence'] >=90:
+                print("Label: " + label['Name'])
+                print("Confidence: " + str(label['Confidence']))
+                tag_list.append(label['Name'])
+                
+
+        return tag_list
+
         
