@@ -2,9 +2,9 @@ from flask import Flask
 from flask_jwt_extended import JWTManager, jwt_required
 from flask_restful import Api
 from config import Config
-from resources.follow import FollowerResource
+from resources.follow import FollowListResource, FollowerResource
 from resources.image import ImageUploadResource
-from resources.main import LikeYesResource, SnsMainResource
+from resources.main import LikeYesResource, MainOneResource, SnsMainResource
 from resources.user import UserListResource, UserLoginResource, UserLogoutResourec
 from resources.user import jwt_blocklist
 
@@ -34,11 +34,13 @@ api.add_resource(ImageUploadResource,'/upload')
 
 api.add_resource(SnsMainResource,'/main')
 
-api.add_resource(LikeYesResource,'/like')
+api.add_resource(LikeYesResource,'/like/<int:ImgId>')
 
-api.add_resource(FollowerResource,'/follow')
+api.add_resource(FollowerResource,'/follow/<int:fuserId>')
 
+api.add_resource(FollowListResource,'/follow')
 
+api.add_resource(MainOneResource,'/main/<int:imgId>')
 
 if __name__ == '__main__':
     app.run()
